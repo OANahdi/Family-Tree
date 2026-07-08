@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body data-theme="dark">
+
+    <div id="ui-container">
+        <h1>Family Tree</h1>
+        <p>Use the trackpad to pan and zoom</p>
+        <button id="theme-toggle" onclick="toggleTheme()">☀️ Light Mode</button>
+        
+        <hr style="border: 1px solid var(--ui-border); margin: 10px 0;">
+        
+        <button class="tool-btn" onclick="exportImage()">📸 Save as Image</button>
+        <button class="tool-btn" onclick="exportData()">💾 Backup Data</button>
+        <button class="tool-btn" onclick="openImportModal()">📂 Restore Data</button>
+    </div>
+
+    <div id="tree-container"></div>
+    <div id="node-tooltip"></div>
+
+    <div id="add-modal" class="hidden">
+        <div class="modal-content">
+            <h2 style="color: var(--male-bg); margin-bottom: 15px;">Add New Member</h2>
+            <input type="text" id="new-name" placeholder="Enter name..." />
+            <select id="new-gender">
+                <option value="M">Son (Male)</option>
+                <option value="F">Daughter (Female)</option>
+            </select>
+            <div class="modal-buttons">
+                <button id="save-btn" onclick="saveNewNode()">Add to Tree</button>
+                <button id="cancel-btn" onclick="closeAddModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="hidden">
+        <div class="modal-content">
+            <h2 style="color: var(--male-bg); margin-bottom: 15px;">Edit Member</h2>
+            <input type="text" id="edit-name" placeholder="New name..." />
+            <select id="edit-gender">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+            <div class="modal-buttons">
+                <button id="save-edit-btn" style="background: var(--male-bg); color: var(--bg-color);" onclick="saveEditNode()">Save</button>
+                <button id="cancel-edit-btn" style="background: #e74c3c; color: white;" onclick="closeEditModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="selection-banner" class="hidden">
+        Selection Mode: Please click on the mother in the tree... 
+        <button id="cancel-selection-btn" onclick="cancelSelection()">Cancel</button>
+    </div>
+
+    <div id="mother-modal" class="hidden">
+        <div class="modal-content">
+            <h2 style="color: var(--female-bg); margin-bottom: 15px;">Add / Edit Mother</h2>
+            <div style="margin-bottom: 15px;">
+                <button id="select-tree-mother-btn" style="width: 100%; padding: 10px; background: var(--female-bg); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="selectMotherFromTree()">Select from Tree (Dynamic Link)</button>
+            </div>
+            <hr style="border-color: var(--ui-border); margin-bottom: 15px;">
+            <div style="margin-bottom: 15px;">
+                <p style="font-size: 14px; margin-bottom: 8px;">Or add from outside the tree:</p>
+                <input type="text" id="outside-mother-name" placeholder="Mother's name..." />
+                <button id="save-outside-mother-btn" style="width: 100%; padding: 10px; background: #3498db; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="saveOutsideMother()">Save Outside Mother</button>
+            </div>
+            <button id="cancel-mother-btn" style="width: 100%; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="closeMotherModal()">Cancel</button>
+        </div>
+    </div>
+
+    <div id="import-modal" class="hidden">
+        <div class="modal-content">
+            <h2 style="color: var(--male-bg); margin-bottom: 15px;">Restore Tree</h2>
+            <label class="tool-btn" style="display: block; cursor: pointer; text-align: center; margin-bottom: 15px; background: #3498db; color: white; padding: 10px 0;">
+                📁 Choose JSON File
+                <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importFromFile(event)">
+            </label>
+            <p style="font-size: 12px; opacity: 0.6; margin-bottom: 8px;">Or paste backup text here:</p>
+            <textarea id="import-text" placeholder="Paste copied code here..." style="width: 100%; height: 90px; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--ui-border); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 11px; direction: ltr; outline: none; resize: none; margin-bottom: 10px;"></textarea>
+            <div class="modal-buttons">
+                <button style="background: #2ecc71; color: white;" onclick="importFromText()">Restore Backup</button>
+                <button style="background: #e74c3c; color: white;" onclick="closeImportModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

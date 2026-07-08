@@ -1,0 +1,162 @@
+/* =================  (Themes) ================= */
+:root {
+    /* Light Mode */
+    --bg-color: #ffffff;
+    --text-color: #2c3e50;
+    --ui-bg: rgba(255, 255, 255, 0.85);
+    --ui-border: rgba(0, 188, 212, 0.3);
+    
+    --male-bg: #00bcd4;         
+    --male-glow: rgba(0, 188, 212, 0.6);
+    
+    --female-bg: #ff6b81;       
+    --female-glow: rgba(255, 107, 129, 0.6);
+    
+    --line-color: #bdc3c7;
+    --modal-bg: #ffffff;
+    --input-bg: #f8f9fa;
+    
+    /* ============== GRID ========= */
+    --grid-pattern: radial-gradient(rgba(0, 188, 212, 0.15) 1.5px, transparent 1.5px);
+}
+
+[data-theme="dark"] {
+    /* Dark Mode */
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --ui-bg: rgba(15, 15, 15, 0.85);
+    --ui-border: rgba(255, 159, 67, 0.3);
+    
+    --male-bg: #ff9f43;         
+    --male-glow: rgba(255, 159, 67, 0.6);
+    
+    --female-bg: #ff6b81;       
+    --female-glow: rgba(255, 107, 129, 0.6);
+    
+    --line-color: #333333;
+    --modal-bg: #111111;
+    --input-bg: #222222;
+    
+    /* Subtle orange dot grid for dark mode elegance */
+    --grid-pattern: radial-gradient(rgba(255, 159, 67, 0.12) 1.5px, transparent 1.5px);
+}
+
+/* ================= General Styles ================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { 
+    font-family: 'Segoe UI', sans-serif; 
+    background-color: var(--bg-color); 
+    color: var(--text-color);
+    overflow: hidden; 
+    transition: background-color 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.5s;
+}
+
+#ui-container { 
+    position: absolute; top: 20px; right: 20px; 
+    background: var(--ui-bg); backdrop-filter: blur(12px); 
+    padding: 15px 20px; border-radius: 12px; 
+    border: 1px solid var(--ui-border); 
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 10; 
+}
+
+h1 { font-size: 20px; color: var(--male-bg); margin-bottom: 5px; transition: color 0.5s; }
+p { font-size: 12px; opacity: 0.7; margin-bottom: 10px; }
+
+#theme-toggle {
+    width: 100%; padding: 6px; border-radius: 6px; border: none;
+    background: var(--text-color); color: var(--bg-color);
+    font-weight: bold; cursor: pointer; transition: 0.3s;
+}
+
+/* Interactive Grid Pattern */
+#tree-container { 
+    width: 100vw; 
+    height: 100vh; 
+    cursor: grab;
+    background-image: var(--grid-pattern);
+    background-size: 32px 32px; 
+    transition: background-image 0.5s ease;
+}
+#tree-container:active { cursor: grabbing; }
+
+/* ================= Tree Nodes Effects (Apple-style bounce) ================= */
+.node rect, .node text {
+    /* Distinct cubic-bezier bounce effect */
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center;
+    transform-box: fill-box; 
+    will-change: transform;
+}
+
+.node:hover rect, .node.active rect {
+    filter: drop-shadow(0 0 12px var(--node-glow));
+    transform: scale(1.08); /* Elegant scaling on interaction */
+    stroke: #ffffff;
+    stroke-width: 3px;
+}
+
+.node:hover text, .node.active text {
+    transform: scale(1.08);
+}
+
+/* ================= Floating Tooltip (Bounce Effect) ================= */
+#node-tooltip {
+    position: absolute; background: var(--ui-bg); backdrop-filter: blur(12px);
+    padding: 14px 20px; border-radius: 10px; border: 1px solid var(--male-bg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); pointer-events: auto;
+    opacity: 0; visibility: hidden; 
+    transform: translate(-50%, 10px) scale(0.9); /* Starts small and low */
+    transform-origin: bottom center; 
+    /* Bounce animation to make it pulse on appearance */
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+    z-index: 100; text-align: center; min-width: 180px;
+}
+#node-tooltip.show { 
+    opacity: 1; visibility: visible; 
+    transform: translate(-50%, calc(-100% - 15px)) scale(1); 
+}
+#node-tooltip::after {
+    content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
+    border-width: 7px 7px 0; border-style: solid; border-color: var(--male-bg) transparent transparent transparent;
+}
+
+/* Tooltip and Tool Buttons */
+.add-child-btn, .mother-btn, .tool-btn { margin-top: 10px; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; }
+.add-child-btn { background-color: var(--male-bg); color: var(--bg-color); }
+.mother-btn { margin-top: 8px; background-color: var(--female-bg); color: white; }
+.tool-btn { width: 100%; padding: 8px; margin-bottom: 5px; background: var(--male-bg); color: var(--bg-color); }
+.add-child-btn:hover, .mother-btn:hover, .tool-btn:hover { filter: brightness(0.9); }
+
+.action-buttons { display: flex; gap: 8px; margin-top: 8px; }
+.edit-btn, .delete-btn { flex: 1; padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+.edit-btn { background-color: #f1c40f; color: #111; }
+.delete-btn { background-color: #e74c3c; color: white; }
+
+/* ================= Modals and Top Bar ================= */
+#add-modal, #edit-modal, #mother-modal, #import-modal {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 200;
+}
+#add-modal.hidden, #edit-modal.hidden, #mother-modal.hidden, #import-modal.hidden { display: none; }
+
+.modal-content {
+    background: var(--modal-bg); padding: 25px; border-radius: 12px; width: 300px;
+    border: 1px solid var(--ui-border); text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    transition: background 0.5s, border 0.5s;
+}
+.modal-content input, .modal-content select {
+    width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px;
+    border: 1px solid var(--ui-border); background: var(--input-bg); color: var(--text-color); outline: none;
+}
+.modal-buttons { display: flex; justify-content: space-between; gap: 10px; }
+.modal-buttons button { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+#save-btn { background: var(--male-bg); color: var(--bg-color); }
+
+#selection-banner {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--male-bg); color: var(--bg-color); padding: 12px 25px; border-radius: 30px;
+    font-weight: bold; font-size: 16px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 300; display: flex; align-items: center; gap: 15px;
+}
+#selection-banner.hidden { display: none; }
+#cancel-selection-btn { background: var(--bg-color); color: var(--text-color); border: none; padding: 5px 12px; border-radius: 15px; cursor: pointer; }
